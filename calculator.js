@@ -2,9 +2,11 @@ const initialState = {
   runningTotal: 0,
   buffer: "0",
   previousOperator: null,
+  hasResult: false,
 };
 
 let state = { ...initialState };
+
 const screen = document.querySelector(`.screen`);
 
 function buttonClick(value) {
@@ -32,6 +34,7 @@ function handleSymbol(symbol) {
       state.previousOperator = null;
       state.buffer = state.runningTotal;
       state.runningTotal = 0;
+      state.hasResult = true;
       break;
     case `←`:
       if (state.buffer.length === 1) {
@@ -73,22 +76,22 @@ function handleMath(symbol) {
 }
 
 function flushOperation(intBuffer) {
-  if (previousOperator === `+`) {
-    runningTotal += intBuffer;
-  } else if (previousOperator === `-`) {
-    runningTotal -= intBuffer;
-  } else if (previousOperator === `×`) {
-    runningTotal *= intBuffer;
+  if (state.previousOperator === `+`) {
+    state.runningTotal += intBuffer;
+  } else if (state.previousOperator === `-`) {
+    state.runningTotal -= intBuffer;
+  } else if (state.previousOperator === `×`) {
+    state.runningTotal *= intBuffer;
   } else {
-    runningTotal /= intBuffer;
+    state.runningTotal /= intBuffer;
   }
 }
 
 function handleNumber(numberString) {
-  if (buffer === `0`) {
-    buffer = numberString;
+  if (state.buffer === `0` || state.hasResult) {
+    state.buffer = numberString;
   } else {
-    buffer = buffer + numberString;
+    state.buffer = state.buffer + numberString;
   }
 }
 
