@@ -7,7 +7,15 @@ const initialState = {
 
 let state = { ...initialState };
 
-const screen = document.querySelector(`.screen`);
+init();
+
+function init() {
+  document
+    .querySelector(`.calc-buttons`)
+    .addEventListener(`click`, function (event) {
+      buttonClick(event.target.innerText);
+    });
+}
 
 function buttonClick(value) {
   if (isNaN(value)) {
@@ -17,25 +25,31 @@ function buttonClick(value) {
     handleNumber(value);
     // it is a number
   }
-  screen.innerText = state.buffer;
+
+  document.querySelector(`.screen`).innerText = state.buffer;
 }
 
 function handleSymbol(symbol) {
   switch (symbol) {
-    case `C`:
+    case `C`: {
       clear();
       break;
-    case `=`:
+    }
+    case `=`: {
       if (state.previousOperator === null) {
         return;
         // there should be two numbers to math
       }
+
       flushOperation(+state.buffer);
+
       state.previousOperator = null;
       state.buffer = state.runningTotal;
       state.runningTotal = 0;
       state.hasResult = true;
+
       break;
+    }
     case `←`:
       if (state.buffer.length === 1) {
         state.buffer = `0`;
@@ -94,13 +108,3 @@ function handleNumber(numberString) {
     state.buffer = state.buffer + numberString;
   }
 }
-
-function init() {
-  document
-    .querySelector(`.calc-buttons`)
-    .addEventListener(`click`, function (event) {
-      buttonClick(event.target.innerText);
-    });
-}
-
-init();
