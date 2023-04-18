@@ -67,7 +67,7 @@ function handleSymbol(symbol) {
 }
 
 function clear() {
-  state = initialState;
+  state = { ...initialState };
 }
 
 function handleMath(symbol) {
@@ -102,9 +102,16 @@ function flushOperation(intBuffer) {
 }
 
 function handleNumber(numberString) {
-  if (state.buffer === `0` || state.hasResult) {
+  if (state.buffer === `0`) {
     state.buffer = numberString;
   } else {
+    if (state.hasResult) {
+      state.buffer = numberString;
+      state.hasResult = false;
+
+      return;
+    }
+
     state.buffer = state.buffer + numberString;
   }
 }
